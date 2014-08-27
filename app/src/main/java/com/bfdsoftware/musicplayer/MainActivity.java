@@ -18,9 +18,14 @@ import android.support.v4.widget.DrawerLayout;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
+import com.bfdsoftware.musicplayer.Services.subsonic.SubsonicMusicService;
+import com.octo.android.robospice.SpiceManager;
+
 
 public class MainActivity extends Activity
         implements NavigationDrawerFragment.NavigationDrawerCallbacks {
+
+    protected SpiceManager spiceManager = new SpiceManager(SubsonicMusicService.class);
 
     /**
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
@@ -45,6 +50,20 @@ public class MainActivity extends Activity
         mNavigationDrawerFragment.setUp(
                 R.id.navigation_drawer,
                 (DrawerLayout) findViewById(R.id.drawer_layout));
+    }
+
+    @Override
+    protected void onStart()
+    {
+        super.onStart();
+        spiceManager.start(this);
+    }
+
+    @Override
+    protected void onStop()
+    {
+        spiceManager.shouldStop();
+        super.onStop();
     }
 
     @Override

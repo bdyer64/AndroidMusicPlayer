@@ -20,4 +20,8 @@
         </activity>
     </application>
 
+    <service
+        android:name="com.bfdsoftware.musicplayer.Services.subsonic.SubsonicMusicService"
+        android:exported="false" />
+
 </manifest>
