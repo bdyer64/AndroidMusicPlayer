@@ -1,0 +1,4 @@
+1. Change communication between fragments to be URI based
+2. Create seperate model and service versions of Artist
+3. Move listener definition to Service
+4. Add a status indicator while loading

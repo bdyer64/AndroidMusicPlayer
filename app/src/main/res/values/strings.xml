@@ -2,9 +2,9 @@
 <resources>
 
     <string name="app_name">MusicPlayer</string>
-    <string name="title_section1">Section 1</string>
-    <string name="title_section2">Section 2</string>
-    <string name="title_section3">Section 3</string>
+    <string name="title_section1">Your Music</string>
+    <string name="title_section2">Search</string>
+    <string name="title_section3">Settings</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="action_example">Example action</string>
@@ -13,5 +13,7 @@
     <string name="id_value">[id]</string>
     <string name="content_label">The Content is</string>
     <string name="content_value">[content]</string>
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="album_art">Album Art</string>
 
 </resources>

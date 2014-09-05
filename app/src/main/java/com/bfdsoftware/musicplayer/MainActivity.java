@@ -3,29 +3,29 @@ package com.bfdsoftware.musicplayer;
 import android.app.Activity;
 
 import android.app.ActionBar;
+import android.app.Application;
 import android.app.Fragment;
 import android.app.FragmentManager;
-import android.content.Context;
-import android.os.Build;
 import android.os.Bundle;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.support.v4.widget.DrawerLayout;
-import android.widget.ArrayAdapter;
-import android.widget.TextView;
 
+import com.bfdsoftware.musicplayer.Model.Artist;
 import com.bfdsoftware.musicplayer.Services.subsonic.SubsonicMusicService;
 import com.octo.android.robospice.SpiceManager;
+import com.octo.android.robospice.SpiceService;
 
 
 public class MainActivity extends Activity
-        implements NavigationDrawerFragment.NavigationDrawerCallbacks {
+        implements NavigationDrawerFragment.NavigationDrawerCallbacks,YourMusicFragment.OnFragmentInteractionListener,
+        ArtistsFragment.OnFragmentInteractionListener
+{
 
-    protected SpiceManager spiceManager = new SpiceManager(SubsonicMusicService.class);
+    protected static SpiceManager subsonicManager = new SpiceManager(SubsonicMusicService.class);
 
     /**
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
@@ -36,6 +36,14 @@ public class MainActivity extends Activity
      * Used to store the last screen title. For use in {@link #restoreActionBar()}.
      */
     private CharSequence mTitle;
+
+    public static Application app = null;
+
+
+    public static Application getMyApplication()
+    {
+        return app;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,28 +58,43 @@ public class MainActivity extends Activity
         mNavigationDrawerFragment.setUp(
                 R.id.navigation_drawer,
                 (DrawerLayout) findViewById(R.id.drawer_layout));
+
+        // Move all this stuff to application (composition root)
+        SubsonicMusicService.getInstance().SetSpiceManager(subsonicManager);
+
+        app = getApplication();
     }
 
     @Override
     protected void onStart()
     {
         super.onStart();
-        spiceManager.start(this);
+        subsonicManager.start(this);
     }
 
     @Override
     protected void onStop()
     {
-        spiceManager.shouldStop();
+        subsonicManager.shouldStop();
         super.onStop();
     }
 
     @Override
     public void onNavigationDrawerItemSelected(int position) {
+
         // update the main content by replacing fragments
         FragmentManager fragmentManager = getFragmentManager();
+        Fragment frag;
+        if (position == 0)
+        {
+            frag = YourMusicFragment.newInstance("Your Music","Your Music");
+        }
+        else
+        {
+            frag = PlaceholderFragment.newInstance(position + 1);
+        }
         fragmentManager.beginTransaction()
-                .replace(R.id.container, PlaceholderFragment.newInstance(position + 1))
+                .replace(R.id.container,frag)
                 .commit();
     }
 
@@ -91,7 +114,11 @@ public class MainActivity extends Activity
 
     public void restoreActionBar() {
         ActionBar actionBar = getActionBar();
-        actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
+        try {
+            actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
+        }
+        catch (Exception exception)
+        {}
         actionBar.setDisplayShowTitleEnabled(true);
         actionBar.setTitle(mTitle);
     }
@@ -122,6 +149,26 @@ public class MainActivity extends Activity
         return super.onOptionsItemSelected(item);
     }
 
+    public void setTitle(String title)
+    {
+        mTitle = title;
+        ActionBar actionBar = getActionBar();
+        actionBar.setDisplayShowTitleEnabled(true);
+        actionBar.setTitle(mTitle);
+    }
+
+    public void onFragmentInteraction(Artist artist)
+    {
+        FragmentManager fragmentManager = getFragmentManager();
+        Fragment frag;
+
+        frag = AlbumListFragment.newInstance(artist);
+
+        fragmentManager.beginTransaction()
+                .replace(R.id.container,frag)
+                .addToBackStack(null)
+                .commit();
+    }
     /**
      * A placeholder fragment containing a simple view.
      */
